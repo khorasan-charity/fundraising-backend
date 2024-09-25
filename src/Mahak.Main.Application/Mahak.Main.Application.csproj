@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Mahak.Main</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mahak.Main.Domain\Mahak.Main.Domain.csproj" />
+    <ProjectReference Include="..\Mahak.Main.Application.Contracts\Mahak.Main.Application.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="8.2.2" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="8.2.2" />
+    <PackageReference Include="Volo.Abp.Account.Application" Version="8.2.2" />
+    <PackageReference Include="Volo.Abp.Identity.Application" Version="8.2.2" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,85 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.Account": {
+      "version": "8.2.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "8.2.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity": {
+      "version": "8.2.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "8.2.2",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "Mahak.Main.Application": {
+      "path": "src/Mahak.Main.Application/Mahak.Main.Application.abppkg",
+      "folder": "src"
+    },
+    "Mahak.Main.Application.Tests": {
+      "path": "test/Mahak.Main.Application.Tests/Mahak.Main.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "Mahak.Main.Domain.Shared": {
+      "path": "src/Mahak.Main.Domain.Shared/Mahak.Main.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "Mahak.Main.Application.Contracts": {
+      "path": "src/Mahak.Main.Application.Contracts/Mahak.Main.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "Mahak.Main.HttpApi": {
+      "path": "src/Mahak.Main.HttpApi/Mahak.Main.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "Mahak.Main.HttpApi.Client": {
+      "path": "src/Mahak.Main.HttpApi.Client/Mahak.Main.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "Mahak.Main.EntityFrameworkCore.Tests": {
+      "path": "test/Mahak.Main.EntityFrameworkCore.Tests/Mahak.Main.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "Mahak.Main.EntityFrameworkCore": {
+      "path": "src/Mahak.Main.EntityFrameworkCore/Mahak.Main.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "Mahak.Main.TestBase": {
+      "path": "test/Mahak.Main.TestBase/Mahak.Main.TestBase.abppkg",
+      "folder": "test"
+    },
+    "Mahak.Main.Domain.Tests": {
+      "path": "test/Mahak.Main.Domain.Tests/Mahak.Main.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "Mahak.Main.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/Mahak.Main.HttpApi.Client.ConsoleTestApp/Mahak.Main.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "Mahak.Main.DbMigrator": {
+      "path": "src/Mahak.Main.DbMigrator/Mahak.Main.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "Mahak.Main.HttpApi.Host": {
+      "path": "src/Mahak.Main.HttpApi.Host/Mahak.Main.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "Mahak.Main.Domain": {
+      "path": "src/Mahak.Main.Domain/Mahak.Main.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props"/>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Mahak.Main</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mahak.Main.Domain.Shared\Mahak.Main.Domain.Shared.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Parbad" Version="3.9.1"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Caching" Version="8.2.2"/>
+    <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="8.2.2"/>
+    <PackageReference Include="Volo.Abp.PermissionManagement.Domain.OpenIddict" Version="8.2.2"/>
+    <PackageReference Include="Volo.Abp.BackgroundJobs.Domain" Version="8.2.2"/>
+    <PackageReference Include="Volo.Abp.AuditLogging.Domain" Version="8.2.2"/>
+    <PackageReference Include="Volo.Abp.SettingManagement.Domain" Version="8.2.2"/>
+    <PackageReference Include="Volo.Abp.OpenIddict.Domain" Version="8.2.2"/>
+    <PackageReference Include="Volo.Abp.Identity.Domain" Version="8.2.2"/>
+  </ItemGroup>
+
+</Project>
