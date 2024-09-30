@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Authentication;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Configuration;
@@ -16,13 +14,11 @@ using Mahak.Main.EntityFrameworkCore;
 using Mahak.Main.MultiTenancy;
 using Microsoft.OpenApi.Models;
 using Volo.Abp;
-using Volo.Abp.Studio;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Autofac;
-using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
@@ -30,18 +26,22 @@ using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
-using Microsoft.AspNetCore.Hosting;
-using Mahak.Main.HealthChecks;
-using Map.Payment;
+using Mahak.Main.Settings;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Parbad.Builder;
 using Parbad.Gateway.ParbadVirtual;
 using Parbad.Storage.Abstractions;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.AspNetCore.Serilog;
-using Volo.Abp.Identity;
+using Volo.Abp.Auditing;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.Studio.Client.AspNetCore;
 using Volo.Abp.Security.Claims;
+using Volo.Abp.Settings;
+using Volo.Abp.Timing;
 
 namespace Mahak.Main;
 
@@ -66,26 +66,26 @@ public class MainHttpApiHostModule : AbpModule
 
         PreConfigure<OpenIddictBuilder>(builder =>
         {
+            builder.AddServer(options =>
+            {
+                if (hostingEnvironment.IsDevelopment())
+                {
+                    options.UseAspNetCore().DisableTransportSecurityRequirement();
+                }
+            });
+
             builder.AddValidation(options =>
             {
-                options.AddAudiences("Main");
+                options.AddAudiences(configuration["AuthServer:Audience"]!);
                 options.UseLocalServer();
                 options.UseAspNetCore();
-            });
-        });
-
-        if (!hostingEnvironment.IsDevelopment())
-        {
-            PreConfigure<AbpOpenIddictAspNetCoreOptions>(options =>
-            {
-                options.AddDevelopmentEncryptionAndSigningCertificate = false;
             });
 
             PreConfigure<OpenIddictServerBuilder>(serverBuilder =>
             {
                 serverBuilder.SetIssuer(new Uri(configuration["AuthServer:Authority"]!));
             });
-        }
+        });
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -127,12 +127,37 @@ public class MainHttpApiHostModule : AbpModule
         ConfigureSwagger(context, configuration);
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
+
+        Configure<AbpAuditingOptions>(options => { options.IsEnabled = false; });
+
+        Configure<AbpAntiForgeryOptions>(options => { options.AutoValidate = false; });
+
+        Configure<KestrelServerOptions>(options => { options.Limits.MaxRequestBodySize = int.MaxValue; });
+
+        Configure<FormOptions>(options =>
+        {
+            options.ValueLengthLimit = int.MaxValue;
+            options.MultipartBodyLengthLimit = int.MaxValue;
+            options.MultipartHeadersLengthLimit = int.MaxValue;
+        });
+
+        Configure<AbpClockOptions>(options => { options.Kind = DateTimeKind.Utc; });
+        
+        Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders =
+                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.ForwardLimit = 2;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
     {
         context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults
             .AuthenticationScheme);
+
         context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
         {
             options.IsDynamicClaimsEnabled = true;
@@ -199,12 +224,12 @@ public class MainHttpApiHostModule : AbpModule
     {
         context.Services.AddAbpSwaggerGenWithOidc(
             configuration["AuthServer:Authority"]!,
-            ["Main"],
+            [configuration["AuthServer:Audience"]!],
             [AbpSwaggerOidcFlows.AuthorizationCode],
             null,
             options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "KhorasanCharity API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Mehrasan API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
             });
@@ -232,10 +257,18 @@ public class MainHttpApiHostModule : AbpModule
         });
     }
 
-    public override void OnApplicationInitialization(ApplicationInitializationContext context)
+    public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
     {
         var app = context.GetApplicationBuilder();
         var env = context.GetEnvironment();
+        
+        app.UseForwardedHeaders();
+
+        var settingProvider = context.ServiceProvider.GetRequiredService<ISettingProvider>();
+        var fileStoragePath = await settingProvider.GetOrNullAsync(MainSettings.FileStoragePath)
+                              ?? throw new UserFriendlyException("File storage path is not set.");
+
+        Directory.CreateDirectory(fileStoragePath);
 
         if (env.IsDevelopment())
         {
@@ -272,7 +305,7 @@ public class MainHttpApiHostModule : AbpModule
         app.UseSwagger();
         app.UseAbpSwaggerUI(options =>
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Main API");
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Mehrasan API");
 
             var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
             options.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);

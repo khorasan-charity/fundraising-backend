@@ -8,7 +8,7 @@ public class Payment : AuditedAggregateRoot<long>
 {
     public required long TrackingNumber { get; set; }
     public required decimal Amount { get; set; }
-    public required string Token { get; set; }
+    public string? Token { get; set; }
     public string? TransactionCode { get; set; }
     public required string GatewayName { get; set; }
     public string? GatewayAccountName { get; set; }

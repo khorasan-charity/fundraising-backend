@@ -11,5 +11,5 @@ public class Transaction : AuditedAggregateRoot<long>
     public string? Message { get; set; }
     public string? AdditionalData { get; set; }
 
-    public Payments.Payment? Payment { get; set; }
+    //public Payments.Payment? Payment { get; set; }
 }

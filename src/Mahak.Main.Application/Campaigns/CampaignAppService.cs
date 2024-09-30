@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Mahak.Main.Campaigns;
 using Mahak.Main.Donations;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 
-namespace Mahak.Main;
+namespace Mahak.Main.Campaigns;
 
-public class CampaignAppService(IReadOnlyRepository<Campaign, int> readOnlyCampaignRepository,
+public class CampaignAppService(
+    IReadOnlyRepository<Campaign, int> readOnlyCampaignRepository,
     IReadOnlyRepository<Donation, long> readOnlyDonationRepository) : MainAppService
 {
     public async Task<PagedResultDto<CampaignDto>> GetListAsync(PagedAndSortedResultRequestDto input)
@@ -33,6 +33,13 @@ public class CampaignAppService(IReadOnlyRepository<Campaign, int> readOnlyCampa
         return new PagedResultDto<CampaignDto>(totalCount, MapTo<List<CampaignDto>>(items)!);
     }
 
+    public async Task<CampaignDto> GetAsync(int id)
+    {
+        var item = await readOnlyCampaignRepository.GetAsync(id);
+
+        return MapTo<CampaignDto>(item)!;
+    }
+
     public async Task<List<CampaignItemDto>> GetItemsAsync(int id)
     {
         var campaign = await readOnlyCampaignRepository.GetAsync(id);
@@ -42,15 +49,15 @@ public class CampaignAppService(IReadOnlyRepository<Campaign, int> readOnlyCampa
     public async Task<PagedResultDto<DonationDto>> GetDonationsAsync(int id, PagedResultRequestDto input)
     {
         var query = await readOnlyDonationRepository.GetQueryableAsync();
-        
+
         query = query.Where(x => x.CampaignId == id);
-        
+
         var totalCount = await AsyncExecuter.CountAsync(query);
 
         query = query
             .OrderByDescending(x => x.CreationTime)
             .PageBy(input);
-        
+
         var items = await AsyncExecuter.ToListAsync(query);
         return new PagedResultDto<DonationDto>(totalCount, MapTo<List<DonationDto>>(items)!);
     }
@@ -58,9 +65,9 @@ public class CampaignAppService(IReadOnlyRepository<Campaign, int> readOnlyCampa
     public async Task<long> GetDonationCountAsync(int id)
     {
         var query = await readOnlyDonationRepository.GetQueryableAsync();
-        
+
         query = query.Where(x => x.CampaignId == id);
-        
+
         return await AsyncExecuter.CountAsync(query);
     }
 }

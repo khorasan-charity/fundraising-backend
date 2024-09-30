@@ -368,6 +368,27 @@ namespace Mahak.Main.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppFiles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    ContentType = table.Column<string>(type: "text", nullable: false),
+                    Extension = table.Column<string>(type: "text", nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    ExtraProperties = table.Column<string>(type: "text", nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppFiles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AppPayments",
                 columns: table => new
                 {
@@ -375,7 +396,7 @@ namespace Mahak.Main.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TrackingNumber = table.Column<long>(type: "bigint", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
-                    Token = table.Column<string>(type: "text", nullable: false),
+                    Token = table.Column<string>(type: "text", nullable: true),
                     TransactionCode = table.Column<string>(type: "text", nullable: true),
                     GatewayName = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     GatewayAccountName = table.Column<string>(type: "text", nullable: true),
@@ -1065,6 +1086,11 @@ namespace Mahak.Main.Migrations
                 column: "PaymentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppFiles_Extension",
+                table: "AppFiles",
+                column: "Extension");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppPayments_Token",
                 table: "AppPayments",
                 column: "Token",
@@ -1177,6 +1203,9 @@ namespace Mahak.Main.Migrations
 
             migrationBuilder.DropTable(
                 name: "AppDonations");
+
+            migrationBuilder.DropTable(
+                name: "AppFiles");
 
             migrationBuilder.DropTable(
                 name: "AppTransactions");

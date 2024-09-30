@@ -36,8 +36,7 @@ public class ParbadEntityFrameworkStorageManager(
     }
 
     public virtual async Task<Parbad.Storage.Abstractions.Models.Payment?> GetPaymentByTrackingNumberAsync(
-        long trackingNumber,
-        CancellationToken cancellationToken = default)
+        long trackingNumber, CancellationToken cancellationToken = default)
     {
         var payment = await paymentRepository.FindAsync(x => x.TrackingNumber == trackingNumber,
             cancellationToken: cancellationToken);

@@ -13,7 +13,7 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Mahak.Main.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20240925163853_Init")]
+    [Migration("20240928213738_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -223,6 +223,61 @@ namespace Mahak.Main.Migrations
                     b.ToTable("AppDonations", (string)null);
                 });
 
+            modelBuilder.Entity("Mahak.Main.Files.File", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<string>("Extension")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Extension");
+
+                    b.ToTable("AppFiles", (string)null);
+                });
+
             modelBuilder.Entity("Mahak.Main.Payments.Payment", b =>
                 {
                     b.Property<long>("Id")
@@ -278,7 +333,6 @@ namespace Mahak.Main.Migrations
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long>("TrackingNumber")
@@ -1979,13 +2033,11 @@ namespace Mahak.Main.Migrations
 
             modelBuilder.Entity("Mahak.Main.Transactions.Transaction", b =>
                 {
-                    b.HasOne("Mahak.Main.Payments.Payment", "Payment")
+                    b.HasOne("Mahak.Main.Payments.Payment", null)
                         .WithMany("Transactions")
                         .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

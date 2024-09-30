@@ -1,4 +1,4 @@
-﻿namespace Map.Payment.Payments;
+﻿namespace Mahak.Main.Payments;
 
 public class VerifyPaymentInputDto
 {

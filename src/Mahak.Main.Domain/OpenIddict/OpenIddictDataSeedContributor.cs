@@ -58,10 +58,10 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
 
     private async Task CreateScopesAsync()
     {
-        if (await _openIddictScopeRepository.FindByNameAsync("Main") == null)
+        if (await _openIddictScopeRepository.FindByNameAsync("Mehrasan") == null)
         {
             await _scopeManager.CreateAsync(new OpenIddictScopeDescriptor {
-                Name = "Main", DisplayName = "Main API", Resources = { "Main" }
+                Name = "Mehrasan", DisplayName = "Mehrasan API", Resources = { "Mehrasan" }
             });
         }
     }
@@ -74,7 +74,7 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
             OpenIddictConstants.Permissions.Scopes.Phone,
             OpenIddictConstants.Permissions.Scopes.Profile,
             OpenIddictConstants.Permissions.Scopes.Roles,
-            "Main"
+            "Mehrasan"
         };
 
         var configurationSection = _configuration.GetSection("OpenIddict:Applications");

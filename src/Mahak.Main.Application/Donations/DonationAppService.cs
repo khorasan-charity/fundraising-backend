@@ -1,11 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Mahak.Main.Campaigns;
-using Mahak.Main.Donations;
-using Mahak.Main.Utils;
 using Volo.Abp.Domain.Repositories;
 
-namespace Mahak.Main;
+namespace Mahak.Main.Donations;
 
 public class DonationAppService(IReadOnlyRepository<Donation, long> readOnlyDonationRepository) : MainAppService
 {

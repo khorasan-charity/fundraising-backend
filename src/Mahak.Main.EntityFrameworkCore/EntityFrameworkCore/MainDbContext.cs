@@ -1,8 +1,11 @@
+using Mahak.Main.Attributes;
 using Mahak.Main.Campaigns;
 using Mahak.Main.Donations;
+using Mahak.Main.Files;
 using Mahak.Main.Payments;
 using Mahak.Main.Transactions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -24,6 +27,7 @@ public class MainDbContext :
     AbpDbContext<MainDbContext>,
     IIdentityDbContext
 {
+    public DbSet<File> Files { get; set; }
     public DbSet<Campaign> Campaigns { get; set; }
     public DbSet<CampaignItem> CampaignItems { get; set; }
     public DbSet<Donation> Donations { get; set; }
@@ -75,6 +79,23 @@ public class MainDbContext :
         builder.ConfigureOpenIddict();
 
         /* Configure your own tables/entities inside here */
+        
+        builder.Entity<File>(b =>
+        {
+            b.ToTable(MainConsts.DbTablePrefix + "Files", MainConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Name)
+                .IsRequired();
+            b.Property(x => x.ContentType)
+                .IsRequired();
+            b.Property(x => x.Extension)
+                .IsRequired();
+            b.Property(x => x.Size)
+                .IsRequired();
+
+            b.HasIndex(x => x.Extension);
+        });
 
         builder.Entity<Campaign>(b =>
         {
@@ -136,6 +157,30 @@ public class MainDbContext :
                 .IsRequired();
         });
 
+        builder.Entity<Attribute>(b =>
+        {
+            b.ToTable(MainConsts.DbTablePrefix + "Attributes", MainConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Title)
+                .IsRequired();
+            b.Property(x => x.ValueType)
+                .IsRequired(false);
+            b.Property(x => x.ValueTypeTitle)
+                .IsRequired(false);
+            b.Property(x => x.Description)
+                .IsRequired(false);
+        });
+
+        builder.Entity<CampaignItemAttribute>(b =>
+        {
+            b.ToTable(MainConsts.DbTablePrefix + "CampaignItemAttributes", MainConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.HasOne(x => x.CampaignItem)
+                .
+        });
+
         builder.Entity<Donation>(b =>
         {
             b.ToTable(MainConsts.DbTablePrefix + "Donations", MainConsts.DbSchema);
@@ -178,7 +223,7 @@ public class MainDbContext :
                 .HasPrecision(18, 2)
                 .IsRequired();
             b.Property(x => x.Token)
-                .IsRequired();
+                .IsRequired(false);
             b.Property(x => x.TransactionCode)
                 .IsRequired(false);
             b.Property(x => x.GatewayName)
@@ -202,7 +247,7 @@ public class MainDbContext :
             b.ToTable(MainConsts.DbTablePrefix + "Transactions", MainConsts.DbSchema);
             b.ConfigureByConvention();
 
-            b.HasOne(x => x.Payment)
+            b.HasOne<Payment>()
                 .WithMany(x => x.Transactions)
                 .HasForeignKey(x => x.PaymentId)
                 .OnDelete(DeleteBehavior.Cascade);
