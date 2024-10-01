@@ -28,8 +28,10 @@ public class MainDbContext :
     IIdentityDbContext
 {
     public DbSet<File> Files { get; set; }
+    public DbSet<Attribute> Attributes { get; set; }
     public DbSet<Campaign> Campaigns { get; set; }
     public DbSet<CampaignItem> CampaignItems { get; set; }
+    public DbSet<CampaignItemAttribute> CampaignItemAttributes { get; set; }
     public DbSet<Donation> Donations { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
@@ -79,7 +81,7 @@ public class MainDbContext :
         builder.ConfigureOpenIddict();
 
         /* Configure your own tables/entities inside here */
-        
+
         builder.Entity<File>(b =>
         {
             b.ToTable(MainConsts.DbTablePrefix + "Files", MainConsts.DbSchema);
@@ -178,7 +180,15 @@ public class MainDbContext :
             b.ConfigureByConvention();
 
             b.HasOne(x => x.CampaignItem)
-                .
+                .WithMany(x => x.Attributes)
+                .HasForeignKey(x => x.CampaignItemId)
+                .IsRequired();
+            b.HasOne(x => x.Attribute)
+                .WithMany()
+                .HasForeignKey(x => x.AttributeId)
+                .IsRequired();
+            b.Property(x => x.Value)
+                .IsRequired();
         });
 
         builder.Entity<Donation>(b =>

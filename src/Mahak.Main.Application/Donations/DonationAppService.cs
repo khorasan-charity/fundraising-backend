@@ -18,6 +18,6 @@ public class DonationAppService(IReadOnlyRepository<Donation, long> readOnlyDona
 
         query = query.Where(x => x.Type == type);
 
-        return await AsyncExecuter.LongCountAsync(query);
+        return await AsyncExecuter.SumAsync(query, x => x.Amount);
     }
 }

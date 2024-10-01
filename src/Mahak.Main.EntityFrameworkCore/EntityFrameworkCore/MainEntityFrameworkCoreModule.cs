@@ -54,7 +54,9 @@ public class MainEntityFrameworkCoreModule : AbpModule
         Configure<AbpEntityOptions>(options =>
         {
             options.Entity<Campaign>(entity => entity.DefaultWithDetailsFunc = q =>
-                q.Include(x => x.CampaignItems));
+                q.Include(x => x.CampaignItems)
+                    .ThenInclude(x => x.Attributes)
+                    .ThenInclude(x => x.Attribute));
         });
     }
 }

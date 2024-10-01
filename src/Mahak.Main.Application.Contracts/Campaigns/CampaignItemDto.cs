@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
 namespace Mahak.Main.Campaigns;
@@ -12,6 +13,7 @@ public class CampaignItemDto : EntityDto<int>
     public decimal? TargetAmount { get; set; }
     public decimal RaisedAmount { get; set; }
     public int RaiseCount { get; set; }
+    public List<CampaignItemAttributeDto> Attributes { get; set; }
     public DateTime CreationTime { get; set; }
     public DateTime? LastModificationTime { get; set; }
 }

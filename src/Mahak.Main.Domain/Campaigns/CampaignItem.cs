@@ -20,5 +20,6 @@ public class CampaignItem : Entity<int>, IMayHaveCreator, IHasCreationTime, IHas
     public DateTime? LastModificationTime { get; set; }
 
     public Campaign? Campaign { get; set; }
+    public ICollection<CampaignItemAttribute> Attributes { get; set; } = new List<CampaignItemAttribute>();
     public ICollection<Donation> Donations { get; set; } = new List<Donation>();
 }
