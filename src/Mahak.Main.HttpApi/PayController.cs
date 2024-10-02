@@ -19,12 +19,6 @@ namespace Mahak.Main;
 public class PayController(IOnlinePayment onlinePayment, IStorageManager storageManager)
     : MainController
 {
-    [HttpGet]
-    public string Test()
-    {
-        return Request.Scheme + "://" + Request.Host.Value + Request.PathBase.Value;
-    }
-    
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromQuery] string gateway, [FromQuery] decimal amount,
         [FromQuery] string returnUrl)
@@ -39,7 +33,7 @@ public class PayController(IOnlinePayment onlinePayment, IStorageManager storage
 
         var callbackUrl = Request.Scheme + "://" + Request.Host + Request.Path + "/verify?returnUrl="
                           + WebUtility.UrlEncode(returnUrl);
-        
+
         var result = await onlinePayment.RequestAsync(x => x
             .SetGateway(gateway)
             .SetAmount(amount)

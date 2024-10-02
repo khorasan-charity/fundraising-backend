@@ -16,6 +16,7 @@ public class Donation : AggregateRoot<long>, IMayHaveCreator, IHasCreationTime
     public string? Name { get; set; }
     public string? Message { get; set; }
     public string? Description { get; set; }
+    public bool IsConfirmed { get; set; }
     public Guid? CreatorId { get; set; }
     public DateTime CreationTime { get; set; }
 

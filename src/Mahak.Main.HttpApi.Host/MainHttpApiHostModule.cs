@@ -36,9 +36,8 @@ using Parbad.Storage.Abstractions;
 using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Auditing;
-using Volo.Abp.OpenIddict;
+
 using Volo.Abp.Swashbuckle;
-using Volo.Abp.Studio.Client.AspNetCore;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.Settings;
 using Volo.Abp.Timing;
@@ -47,7 +46,6 @@ namespace Mahak.Main;
 
 [DependsOn(
     typeof(MainHttpApiModule),
-    typeof(AbpStudioClientAspNetCoreModule),
     typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
     typeof(AbpAutofacModule),
     typeof(AbpAspNetCoreMultiTenancyModule),
@@ -283,7 +281,6 @@ public class MainHttpApiHostModule : AbpModule
         }
 
         app.UseStaticFiles();
-        app.UseAbpStudioLink();
         app.UseRouting();
         app.UseAbpSecurityHeaders();
         app.UseCors();

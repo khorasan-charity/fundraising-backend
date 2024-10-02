@@ -5,12 +5,10 @@ using Mahak.Main.Files;
 using Mahak.Main.Payments;
 using Mahak.Main.Transactions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.Identity;
@@ -220,6 +218,8 @@ public class MainDbContext :
             b.Property(x => x.Description)
                 .HasMaxLength(1000)
                 .IsRequired(false);
+            b.Property(x => x.IsConfirmed)
+                .IsRequired();
         });
 
         builder.Entity<Payment>(b =>
