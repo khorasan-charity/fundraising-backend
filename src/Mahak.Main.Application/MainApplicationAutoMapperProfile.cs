@@ -14,7 +14,9 @@ public class MainApplicationAutoMapperProfile : Profile
         CreateMap<File, FileDto>();
         CreateMap<Campaign, CampaignDto>();
         CreateMap<CampaignItem, CampaignItemDto>();
+        CreateMap<Payment, PaymentDto>();
         CreateMap<Donation, DonationDto>();
+        CreateMap<Donation, DonationDetailsDto>();
         CreateMap<CampaignItemAttribute, CampaignItemAttributeDto>()
             .ForMember(x => x.Title, x => x.MapFrom(y => y.Attribute.Title))
             .ForMember(x => x.ValueType, x => x.MapFrom(y => y.Attribute.ValueType))

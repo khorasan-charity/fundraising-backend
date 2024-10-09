@@ -5,8 +5,9 @@ using Volo.Abp.Application.Dtos;
 
 namespace Mahak.Main.Donations;
 
-public class DonationDto : EntityDto<long>
+public class DonationDetailsDto : EntityDto<long>
 {
+    public Guid Hash { get; set; }
     public int CampaignId { get; set; }
     public int? CampaignItemId { get; set; }
     public decimal Amount { get; set; }
@@ -16,4 +17,6 @@ public class DonationDto : EntityDto<long>
     public string? Description { get; set; }
     public Guid? CreatorId { get; set; }
     public DateTime CreationTime { get; set; }
+
+    public PaymentDto? Payment { get; set; }
 }

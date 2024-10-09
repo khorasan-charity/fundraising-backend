@@ -194,6 +194,8 @@ public class MainDbContext :
             b.ToTable(MainConsts.DbTablePrefix + "Donations", MainConsts.DbSchema);
             b.ConfigureByConvention();
 
+            b.Property(x => x.Hash)
+                .IsRequired();
             b.HasOne(x => x.Campaign)
                 .WithMany(x => x.Donations)
                 .HasForeignKey(x => x.CampaignId)
@@ -211,6 +213,9 @@ public class MainDbContext :
                 .IsRequired();
             b.Property(x => x.Name)
                 .HasMaxLength(100)
+                .IsRequired(false);
+            b.Property(x => x.Mobile)
+                .HasMaxLength(16)
                 .IsRequired(false);
             b.Property(x => x.Message)
                 .HasMaxLength(300)

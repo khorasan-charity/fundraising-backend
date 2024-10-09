@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,7 +51,7 @@ public class CampaignAppService(
     {
         var query = await readOnlyDonationRepository.GetQueryableAsync();
 
-        query = query.Where(x => x.CampaignId == id);
+        query = query.Where(x => x.CampaignId == id && x.IsConfirmed);
 
         var totalCount = await AsyncExecuter.CountAsync(query);
 
@@ -66,7 +67,7 @@ public class CampaignAppService(
     {
         var query = await readOnlyDonationRepository.GetQueryableAsync();
 
-        query = query.Where(x => x.CampaignId == id);
+        query = query.Where(x => x.CampaignId == id && x.IsConfirmed);
 
         return await AsyncExecuter.CountAsync(query);
     }

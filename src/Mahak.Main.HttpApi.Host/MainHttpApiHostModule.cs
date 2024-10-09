@@ -104,19 +104,19 @@ public class MainHttpApiHostModule : AbpModule
             });
         }
 
-        context.Services.AddParbad()
-            .ConfigureHttpContext(builder => builder.UseDefaultAspNetCore())
-            .ConfigureGateways(gateways =>
-            {
-                gateways
-                    .AddParbadVirtual()
-                    .WithOptions(x => x.GatewayPath = "/virtual-gateway")
-                    .WithAccounts(x => x.AddInMemory(y => y.Name = "ParbadVirtual"));
-            })
-            .ConfigureStorage(builder => builder
-                .AddStorage<ParbadEntityFrameworkStorage>(ServiceLifetime.Transient)
-                .AddStorageManager<ParbadEntityFrameworkStorageManager>(ServiceLifetime.Transient))
-            .ConfigureOptions(x => { x.EnableLogging = true; });
+        // context.Services.AddParbad()
+        //     .ConfigureHttpContext(builder => builder.UseDefaultAspNetCore())
+        //     .ConfigureGateways(gateways =>
+        //     {
+        //         gateways
+        //             .AddParbadVirtual()
+        //             .WithOptions(x => x.GatewayPath = "/virtual-gateway")
+        //             .WithAccounts(x => x.AddInMemory(y => y.Name = "ParbadVirtual"));
+        //     })
+        //     .ConfigureStorage(builder => builder
+        //         .AddStorage<ParbadEntityFrameworkStorage>(ServiceLifetime.Transient)
+        //         .AddStorageManager<ParbadEntityFrameworkStorageManager>(ServiceLifetime.Transient))
+        //     .ConfigureOptions(x => { x.EnableLogging = true; });
 
         ConfigureAuthentication(context);
         ConfigureUrls(configuration);
@@ -124,7 +124,7 @@ public class MainHttpApiHostModule : AbpModule
         ConfigureConventionalControllers();
         ConfigureSwagger(context, configuration);
         ConfigureVirtualFileSystem(context);
-        ConfigureCors(context, configuration);
+        // ConfigureCors(context, configuration);
 
         Configure<AbpAuditingOptions>(options => { options.IsEnabled = false; });
 
@@ -283,9 +283,11 @@ public class MainHttpApiHostModule : AbpModule
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAbpSecurityHeaders();
-        app.UseCors();
 
-        app.UseParbadVirtualGateway();
+        app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        // app.UseCors();
+
+        // app.UseParbadVirtualGateway();
 
         app.UseAuthentication();
         app.UseAbpOpenIddictValidation();

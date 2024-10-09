@@ -8,12 +8,14 @@ namespace Mahak.Main.Donations;
 
 public class Donation : AggregateRoot<long>, IMayHaveCreator, IHasCreationTime
 {
+    public Guid Hash { get; set; }
     public int CampaignId { get; set; }
     public CampaignType Type { get; set; }
     public int? CampaignItemId { get; set; }
     public decimal Amount { get; set; }
     public long? PaymentId { get; set; }
     public string? Name { get; set; }
+    public string? Mobile { get; set; }
     public string? Message { get; set; }
     public string? Description { get; set; }
     public bool IsConfirmed { get; set; }
